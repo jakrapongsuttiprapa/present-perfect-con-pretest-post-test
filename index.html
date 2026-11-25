@@ -194,6 +194,31 @@ body.m-post .opt.sel .k{background:var(--g-post)}
 .qdot.done{background:#E9FBF6;color:#0C8A7A}
 .qdot.cur{border-color:var(--orange);color:var(--ink)}
 .timer{font-variant-numeric:tabular-nums}
+.qdot.w{background:#F3EEFF;color:#7C5CFF}.qdot.w.done{background:#E9FBF6;color:#0C8A7A}
+.sec{font-size:13px;font-weight:900;padding:5px 12px;border-radius:999px;background:#EDE7FF;color:#5B3FE0}
+.sec.mc{background:#FFEFE6;color:#E2553F}
+.wbox{margin-top:22px;position:relative}
+.wline{font-size:clamp(18px,2.4vw,23px);font-weight:800;line-height:2.3}
+.wsel{appearance:none;-webkit-appearance:none;font-weight:800;font-size:17px;padding:8px 34px 8px 14px;border-radius:12px;border:2px dashed #FFAA7A;background:#FFF7F1 linear-gradient(45deg,transparent 50%,#E2553F 50%) calc(100% - 18px) 55%/6px 6px no-repeat;color:var(--ink);margin:0 4px;max-width:100%}
+.wsel.ok{border-style:solid;border-color:#7C5CFF;background-color:#F3EEFF}
+.prompt{padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#FFF6EE,#F5F0FF);font-size:clamp(17px,2.2vw,21px);font-weight:800}
+.hint{margin-top:10px;font-size:15px;font-weight:700;color:var(--sub)}
+.winput{margin-top:14px;font-size:18px;font-weight:700;padding:16px 18px}
+.tray{display:flex;flex-wrap:wrap;gap:10px;padding:14px;border-radius:18px;background:#FBF8FF;border:1.5px dashed #DCCFF0;min-height:66px}
+.tile{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;padding:10px 16px;border-radius:14px;background:#fff;border:2px solid #E6DCF3;font-weight:900;font-size:17px;box-shadow:0 4px 10px -6px rgba(90,50,120,.35);transition:transform .12s}
+.tile:active{cursor:grabbing}
+.tile.picked{border-color:transparent;background:var(--g-post);color:#fff}
+.tile.dragging{opacity:.35}
+.tile.used{opacity:.3;pointer-events:none}
+.ghost{position:fixed;pointer-events:none;z-index:99;transform:translate(-50%,-50%) scale(1.08) rotate(-3deg);box-shadow:0 18px 30px -10px rgba(60,30,110,.45)}
+.oline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-height:74px;padding:14px;border-radius:18px;background:#fff;border:2.5px solid #FFC9AE;margin-bottom:12px}
+.oline:empty::before{content:"ลากหรือแตะคำด้านล่างมาเรียงที่นี่";color:#B9AECB;font-weight:700}
+.oline .tile{border-color:#FFB38A;background:#FFF5EE}
+.srow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:12px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--line);margin-top:10px;font-size:18px;font-weight:800}
+.dropz{display:inline-flex;align-items:center;justify-content:center;min-width:88px;height:44px;padding:0 12px;border-radius:12px;border:2px dashed #C8B8FF;background:#F7F3FF;color:#B9AECB;font-weight:900;cursor:pointer}
+.dropz.full{border-style:solid;border-color:#7C5CFF;background:#EDE7FF;color:#5B3FE0}
+.dropz.hot{border-color:#FF9F43;background:#FFF1E4}
+.wres{margin-top:8px;font-size:15px;font-weight:700}
 
 /* ===== result ===== */
 .res-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
@@ -381,6 +406,70 @@ const QUESTIONS = [
  {lv:'hard',t:'สถานการณ์',q:'สถานการณ์: คุณเริ่มทำความสะอาดห้องตอน 9 โมง ตอนนี้ 11 โมงแล้วและยังทำอยู่ ควรพูดว่าอย่างไร?',o:['I have been cleaning for two hours.','I cleaned for two hours.','I have cleaned two hours ago.','I am cleaning since 9 o’clock.'],a:0,ex:'เริ่มในอดีต ยังทำอยู่ เน้นช่วงเวลาต่อเนื่อง → have been cleaning for two hours'}
 ];
 const LV_TH = {easy:'ง่าย',medium:'ปานกลาง',hard:'ยาก'};
+
+/* =========================================================
+   ตอนที่ 2 · เขียนตอบ (pre:true = อยู่ใน Pretest 5 ข้อ · Post-test ใช้ครบ 10 ข้อ)
+   kind: pick = dropdown {0}{1} · fill = พิมพ์เติมคำ · write = เขียนประโยค
+         sort = ลากคำลงช่อง · order = ลากเรียงประโยค
+   accept: คำตอบที่ยอมรับ (ไม่สนตัวพิมพ์เล็ก-ใหญ่ / จุดท้ายประโยค / รูปย่อ 've 's n't)
+   ========================================================= */
+const WRITTEN = [
+ {id:'W1',lv:'easy',kind:'pick',pre:true,t:'Dropdown',q:'My sister {0} been {1} a novel since lunch.',blanks:[['has','have','is'],['read','reading','reads']],ans:['has','reading'],ex:'My sister (เอกพจน์) ใช้ has และหลัง been ต้องเป็น V-ing → has been reading'},
+ {id:'W2',lv:'easy',kind:'fill',pre:true,t:'พิมพ์เติมคำ',q:'They ___ (play) badminton for an hour.',accept:['have been playing'],ex:'They + have been + V-ing → have been playing'},
+ {id:'W3',lv:'easy',kind:'sort',t:'ลากคำลงช่อง',bank:['for','since'],q:["I've been living here {0} 2023.",'She has been working {1} three months.','We have been waiting {2} last Monday.','He has been feeling sick {3} a long time.'],ans:['since','for','since','for'],ex:'since + จุดเริ่มต้น (2023, last Monday) · for + ระยะเวลา (three months, a long time)'},
+ {id:'W4',lv:'medium',kind:'order',pre:true,t:'ลากเรียงประโยค',tiles:['How long','has','she','been','waiting','?'],ex:'คำถาม How long + has/have + S + been + V-ing? → How long has she been waiting?'},
+ {id:'W5',lv:'medium',kind:'write',pre:true,t:'เขียนประโยคใหม่',q:'He started working at the bank in 2020. He still works there.',hint:'รวมเป็นประโยคเดียวด้วย Present Perfect Continuous + since',accept:['He has been working at the bank since 2020'],ex:'เริ่มปี 2020 และยังทำอยู่ → He has been working at the bank since 2020.'},
+ {id:'W6',lv:'medium',kind:'fill',t:'พิมพ์เติมคำ (ปฏิเสธ)',q:'We ___ (not / sleep) well lately because of the noise.',accept:['have not been sleeping'],ex:"We + have not (haven't) + been + V-ing → haven't been sleeping"},
+ {id:'W7',lv:'hard',kind:'write',pre:true,t:'แก้ประโยคให้ถูก',q:'She have been learning Japanese since two years.',hint:'ประโยคนี้ผิด 2 จุด เขียนประโยคที่ถูกต้องทั้งประโยค',accept:['She has been learning Japanese for two years'],ex:'She ต้องใช้ has และ two years เป็นระยะเวลา ต้องใช้ for → She has been learning Japanese for two years.'},
+ {id:'W8',lv:'hard',kind:'pick',t:'Dropdown · PP vs PPC',q:'I {0} this book all afternoon, and I {1} three chapters so far.',blanks:[['have read','have been reading'],['have finished','have been finishing']],ans:['have been reading','have finished'],ex:'ทำต่อเนื่องทั้งบ่าย (all afternoon) → have been reading · บอกจำนวนที่ทำเสร็จ (three chapters) → have finished'},
+ {id:'W9',lv:'easy',kind:'order',t:'ลากเรียงประโยค',tiles:['They','have','been','playing','for','two hours','.'],ex:'S + have + been + V-ing + for + ระยะเวลา → They have been playing for two hours.'},
+ {id:'W10',lv:'hard',kind:'write',t:'เขียนคำถาม',q:'you / learn / English',hint:'เขียนคำถามว่า "เรียนภาษาอังกฤษมานานเท่าไรแล้ว" ขึ้นต้นด้วย How long',accept:['How long have you been learning English'],ex:'How long + have + you + been + V-ing? → How long have you been learning English?'}
+];
+const ALL = QUESTIONS.concat(WRITTEN.map(w => Object.assign({w:true}, w)));
+const MC_IDS = QUESTIONS.map((_, i) => i);
+const W_IDS = mode => WRITTEN.map((w, i) => (mode === 'post' || w.pre) ? QUESTIONS.length + i : -1).filter(i => i >= 0);
+const TOTAL = mode => MC_IDS.length + W_IDS(mode).length;
+const KIND_TH = {pick:'เลือกคำ', fill:'พิมพ์เติมคำ', write:'เขียนตอบ', sort:'ลากคำลงช่อง', order:'เรียงประโยค'};
+
+function normAns(x){
+  return String(x == null ? '' : x).toLowerCase().replace(/[’‘`´]/g, "'").replace(/\s+/g, ' ').trim()
+    .replace(/\b(i|you|we|they)'ve\b/g, '$1 have').replace(/\b(he|she|it)'s been\b/g, '$1 has been')
+    .replace(/\bhaven't\b/g, 'have not').replace(/\bhasn't\b/g, 'has not')
+    .replace(/\s+([?.!,])/g, '$1').replace(/[.!?]+$/, '').trim();
+}
+function isAnswered(Q, v){
+  if (!Q.w) return v != null;
+  if (v == null) return false;
+  if (Q.kind === 'pick' || Q.kind === 'sort') return Array.isArray(v) && v.length === (Q.kind === 'pick' ? Q.blanks.length : Q.q.length) && v.every(x => x);
+  if (Q.kind === 'order') return Array.isArray(v) && v.length === Q.tiles.length;
+  return String(v).trim() !== '';
+}
+function isCorrect(Q, v){
+  if (!Q.w) return v === Q.a;
+  if (!isAnswered(Q, v)) return false;
+  if (Q.kind === 'pick' || Q.kind === 'sort') return Q.ans.every((a, i) => v[i] === a);
+  if (Q.kind === 'order') return v.every((t, i) => t === i);
+  const n = normAns(v);
+  const acc = Q.accept.map(normAns);
+  if (Q.kind === 'fill') Q.accept.forEach(a => acc.push(normAns(Q.q.replace(/___\s*\([^)]*\)/, a))));
+  return acc.includes(n);
+}
+function ansText(Q, v){
+  if (!Q.w) return v == null ? '' : Q.o[v];
+  if (v == null || (Array.isArray(v) && !v.length)) return '';
+  if (Q.kind === 'pick') return v.map(x => x || '—').join(' / ');
+  if (Q.kind === 'sort') return v.map(x => x || '—').join(', ');
+  if (Q.kind === 'order') return v.map(i => Q.tiles[i]).join(' ').replace(/\s+([?.!,])/g, '$1');
+  return String(v);
+}
+function rightText(Q){
+  if (!Q.w) return Q.o[Q.a];
+  if (Q.kind === 'pick') return Q.ans.join(' / ');
+  if (Q.kind === 'sort') return Q.ans.join(', ');
+  if (Q.kind === 'order') return Q.tiles.join(' ').replace(/\s+([?.!,])/g, '$1');
+  if (Q.kind === 'write') return Q.accept[0] + (/^how /i.test(Q.accept[0]) ? '?' : '.');
+  return Q.accept[0];
+}
 
 /* =========================================================
    Utilities
@@ -645,7 +734,7 @@ function heroBlock(){
     <div>
       <span class="eyebrow">✨ Grade 12 · ม.6/1 – 6/3</span>
       <h1 class="h1" style="margin-top:14px">Present Perfect<br><span class="grad">Continuous Tense</span></h1>
-      <p class="lead">แบบทดสอบก่อนเรียน (Pretest) และหลังเรียน (Post-test) ชุดละ 30 ข้อ มีทั้งง่าย กลาง ยาก ทำซ้ำได้เรื่อย ๆ จนกว่าจะเก่ง 💪</p>
+      <p class="lead">แบบทดสอบก่อนเรียน (Pretest) และหลังเรียน (Post-test) ตอนที่ 1 ปรนัย 30 ข้อ + ตอนที่ 2 เขียนตอบ (Pretest 5 · Post-test 10) มีทั้งง่าย กลาง ยาก ทำซ้ำได้เรื่อย ๆ จนกว่าจะเก่ง 💪</p>
       <div class="formula"><span>Subject</span><b>+</b><span>has / have</span><b>+</b><span class="v">been</span><b>+</b><span class="v">V-ing</span></div>
     </div>
     <div class="hero-art">${heroArt()}</div>
@@ -717,7 +806,7 @@ async function doLogin(key, silent){
   startPing();
   retryPending();
   const att = store.get('ppc_att_' + key, null);
-  if (att && att.answers && att.order && att.order.length === QUESTIONS.length){
+  if (att && att.answers && Array.isArray(att.order) && att.order.length === TOTAL(att.mode) && att.order.every(i => ALL[i])){
     delete att.submitting;
     S.att = att;
     toast('กลับมาทำข้อสอบต่อจากเดิม ✍️', 'good');
@@ -761,7 +850,7 @@ function testCard(mode){
     <div class="tcover ${mode}${cover}">
       <span class="tag">${isPre ? '📘 ก่อนเรียน' : '📗 หลังเรียน'}</span>
       ${img ? '' : coverDeco(mode)}
-      <div><div class="big">${isPre ? 'PRETEST' : 'POST-TEST'}</div><div style="font-weight:800;opacity:.95">30 ข้อ · ง่าย / กลาง / ยาก</div></div>
+      <div><div class="big">${isPre ? 'PRETEST' : 'POST-TEST'}</div><div style="font-weight:800;opacity:.95">${TOTAL(mode)} ข้อ · ปรนัย 30 + เขียนตอบ ${W_IDS(mode).length}</div></div>
     </div>
     <div class="tbody">
       <div class="stats">
@@ -779,7 +868,8 @@ function renderHub(){
   setState('hub');
   const me = S.me, st = S.status || {};
   const hasBoth = st.preBest != null && st.postBest != null;
-  const gain = hasBoth ? st.postBest - st.preBest : 0;
+  const preP = hasBoth ? Math.round(st.preBest / TOTAL('pre') * 100) : 0, postP = hasBoth ? Math.round(st.postBest / TOTAL('post') * 100) : 0;
+  const gain = postP - preP;
   main(`<div class="hello">
       <div class="avatar" style="width:62px;height:62px;font-size:26px">${esc(initials(me.name))}</div>
       <div><h2>สวัสดี ${esc(me.name)} 👋</h2><div class="muted">ชั้น ม.${esc(me.cls)} · เลขที่ ${esc(me.no)}</div></div>
@@ -789,14 +879,14 @@ function renderHub(){
     ${S.settings.announce ? `<div class="announce" style="margin:0 0 18px"><span style="font-size:22px">📢</span><div>${esc(S.settings.announce)}</div></div>` : ''}
     <div class="tests">${testCard('pre')}${testCard('post')}</div>
     ${hasBoth ? `<div class="card compare">
-      <div class="gain" style="--p:${Math.max(0, Math.min(100, gain / 30 * 100 * 2))}%"><div>${gain > 0 ? '+' : ''}${gain}<small>พัฒนาการ</small></div></div>
+      <div class="gain" style="--p:${Math.max(0, Math.min(100, gain * 2))}%"><div>${gain > 0 ? '+' : ''}${gain}%<small>พัฒนาการ</small></div></div>
       <div class="bars">
         <div style="font-weight:900;font-size:18px">${gain > 0 ? '🎉 เก่งขึ้นมาก! คะแนนหลังเรียนสูงกว่าก่อนเรียน' : gain === 0 ? '💪 คะแนนเท่าเดิม ลองทำ Post-test อีกครั้งนะ' : '📚 ทบทวนอีกนิด แล้วลอง Post-test ใหม่'}</div>
-        <div class="bar-row"><span>Pretest</span><div class="bar"><i style="background:var(--g-pre)" data-w="${st.preBest / 30 * 100}"></i></div><span>${st.preBest}/30</span></div>
-        <div class="bar-row"><span>Post-test</span><div class="bar"><i style="background:var(--g-post)" data-w="${st.postBest / 30 * 100}"></i></div><span>${st.postBest}/30</span></div>
+        <div class="bar-row"><span>Pretest</span><div class="bar"><i style="background:var(--g-pre)" data-w="${preP}"></i></div><span>${st.preBest}/${TOTAL('pre')}</span></div>
+        <div class="bar-row"><span>Post-test</span><div class="bar"><i style="background:var(--g-post)" data-w="${postP}"></i></div><span>${st.postBest}/${TOTAL('post')}</span></div>
       </div></div>` : ''}
     <div class="info-strip">
-      <span class="chip">📝 30 ข้อ / ชุด</span><span class="chip">🟢 ง่าย 10</span><span class="chip">🟠 ปานกลาง 10</span><span class="chip">🔴 ยาก 10</span><span class="chip">🔀 สลับข้อทุกครั้ง</span><span class="chip">🔁 ทำซ้ำได้</span>
+      <span class="chip">📝 ปรนัย 30 ข้อ</span><span class="chip">✍️ เขียนตอบ: Pre 5 · Post 10</span><span class="chip">🟢 ง่าย · 🟠 ปานกลาง · 🔴 ยาก</span><span class="chip">🧩 Dropdown · ลากคำ · เรียงประโยค · พิมพ์ตอบ</span><span class="chip">🔀 สลับข้อทุกครั้ง</span><span class="chip">🔁 ทำซ้ำได้</span>
     </div>`);
   requestAnimationFrame(() => document.querySelectorAll('.bar i[data-w]').forEach(i => i.style.width = i.dataset.w + '%'));
   document.querySelectorAll('[data-start]').forEach(b => b.onclick = () => startTest(b.dataset.start));
@@ -927,13 +1017,14 @@ function faceDone(mode, img, method){
    Quiz
    ========================================================= */
 function beginQuiz(mode){
-  const order = shuffle(QUESTIONS.map((_, i) => i));
+  const order = shuffle(MC_IDS).concat(shuffle(W_IDS(mode)));
   const perm = {};
-  order.forEach(i => perm[i] = shuffle([0, 1, 2, 3]));
+  order.forEach(i => { const Q = ALL[i]; perm[i] = !Q.w ? shuffle([0, 1, 2, 3]) : Q.kind === 'order' ? shuffleNotSorted(Q.tiles.length) : null; });
   S.att = {id:uid(), mode, order, perm, answers:{}, cur:0, start:Date.now(), violations:0, key:S.me.key};
   saveAtt();
   renderQuiz();
 }
+function shuffleNotSorted(n){ let p; do { p = shuffle([...Array(n).keys()]); } while (n > 1 && p.every((x, i) => x === i)); return p; }
 function saveAtt(){ if (S.att && S.me) store.set('ppc_att_' + S.me.key, S.att); }
 function renderQuiz(){
   const A = S.att;
@@ -943,7 +1034,7 @@ function renderQuiz(){
       <span class="chip">👤 ${esc(S.me.name)} · ม.${esc(S.me.cls)} เลขที่ ${esc(S.me.no)}</span>
       <div class="spacer"></div>
       <span class="chip timer">⏱ <span id="qTimer">00:00</span></span>
-      <span class="chip" id="qCount">0/30</span>
+      <span class="chip" id="qCount">0/${A.order.length}</span>
     </div><div class="qprog"><i id="qBar" style="width:0"></i></div></div>
     <div id="qArea"></div>
     <div class="card qmap" id="qMap"></div>`);
@@ -952,15 +1043,16 @@ function renderQuiz(){
   tick(); S.timerInt = setInterval(tick, 1000);
   drawQuestion();
 }
-function answeredCount(){ return Object.keys(S.att.answers).length; }
+function answeredCount(){ const A = S.att; return A.order.filter(i => isAnswered(ALL[i], A.answers[i])).length; }
 function drawQuestion(){
-  const A = S.att, pos = A.cur, qi = A.order[pos], Q = QUESTIONS[qi];
+  const A = S.att, pos = A.cur, qi = A.order[pos], Q = ALL[qi];
   setState('quiz');
+  if (Q.w) return drawWritten(A, pos, qi, Q);
   const qHtml = esc(Q.q).replace(/\n/g, '<br>').replace(/___/g, '<span class="blank"></span>').replace(/\[\[(.+?)\]\]/g, '<u class="mark">$1</u>');
   const letters = ['A','B','C','D'];
   const chosen = A.answers[qi];
   $('#qArea').innerHTML = `<div class="card qcard" translate="no">
-    <div class="qmeta"><span class="lv ${Q.lv}">${LV_TH[Q.lv]}</span><span class="qtype">${esc(Q.t)}</span><span class="qno">ข้อ ${pos + 1} / ${A.order.length}</span></div>
+    <div class="qmeta"><span class="sec mc">ตอนที่ 1 · ปรนัย</span><span class="lv ${Q.lv}">${LV_TH[Q.lv]}</span><span class="qtype">${esc(Q.t)}</span><span class="qno">ข้อ ${pos + 1} / ${A.order.length}</span></div>
     <div class="qtext">${qHtml}${Q.t === 'หาที่ผิด' ? '<span class="th">ส่วนที่ขีดเส้นใต้ส่วนใดผิด?</span>' : ''}</div>
     ${Q.img ? `<img class="qimg" alt="" src="${esc(Q.img)}">` : ''}
     <div class="opts">${A.perm[qi].map((oi, k) => `<button class="opt${chosen === oi ? ' sel' : ''}" data-oi="${oi}"><span class="k">${letters[k]}</span><span>${esc(Q.o[oi])}</span></button>`).join('')}</div>
@@ -987,14 +1079,132 @@ function drawQuestion(){
   updateQuizBars();
   if (window.scrollY > 200) window.scrollTo({top:0, behavior:'smooth'});
 }
+
+/* ---------- ตอนที่ 2: เขียนตอบ ---------- */
+let pickedTile = null;
+function navHtml(A, pos){
+  return `<div class="qnav">
+      <button class="btn btn-ghost" id="qPrev" ${pos === 0 ? 'disabled' : ''}>← ก่อนหน้า</button>
+      <div class="spacer"></div>
+      ${pos < A.order.length - 1 ? `<button class="btn ${A.mode === 'pre' ? 'btn-pre' : 'btn-post'}" id="qNext">ถัดไป →</button>` : ''}
+      <button class="btn btn-dark" id="qSubmit">✅ ส่งคำตอบ</button>
+    </div>`;
+}
+function bindNav(A){
+  $('#qPrev').onclick = () => { if (A.cur > 0){ clearTimeout(drawQuestion._t); A.cur--; pickedTile = null; saveAtt(); drawQuestion(); } };
+  const nx = $('#qNext'); if (nx) nx.onclick = () => { clearTimeout(drawQuestion._t); A.cur++; pickedTile = null; saveAtt(); drawQuestion(); };
+  $('#qSubmit').onclick = askSubmit;
+}
+/* pointer drag (works with mouse, touch, pen) — short press = tap */
+function makeDrag(el, onDrop, onTap){
+  el.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    const sx = e.clientX, sy = e.clientY; let ghost = null, hot = null;
+    try{ el.setPointerCapture && el.setPointerCapture(e.pointerId); }catch(err){}
+    const move = ev => {
+      if (!ghost && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 7){
+        ghost = el.cloneNode(true); ghost.classList.add('ghost'); ghost.classList.remove('picked'); document.body.appendChild(ghost); el.classList.add('dragging');
+      }
+      if (ghost){
+        ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px';
+        const t = document.elementFromPoint(ev.clientX, ev.clientY), z = t && t.closest('.dropz,.oline,.tray');
+        if (hot && hot !== z) hot.classList.remove('hot');
+        if (z){ z.classList.add('hot'); hot = z; }
+        if (ev.cancelable) ev.preventDefault();
+      }
+    };
+    const up = ev => {
+      el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      if (hot) hot.classList.remove('hot');
+      if (ghost){ ghost.remove(); el.classList.remove('dragging'); if (ev.type === 'pointerup') onDrop(document.elementFromPoint(ev.clientX, ev.clientY)); }
+      else if (ev.type === 'pointerup') onTap();
+    };
+    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+}
+function drawWritten(A, pos, qi, Q){
+  const v = A.answers[qi];
+  let body = '';
+  if (Q.kind === 'pick'){
+    const parts = Q.q.split(/\{(\d)\}/);
+    body = `<div class="wline">${parts.map((p, i) => i % 2 ? `<select class="wsel${v && v[p] ? ' ok' : ''}" data-b="${p}"><option value="">— เลือก —</option>${Q.blanks[p].map(o => `<option${v && v[p] === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>` : esc(p)).join('')}</div>`;
+  } else if (Q.kind === 'fill'){
+    body = `<div class="prompt">${esc(Q.q).replace(/___/, '<span class="blank"></span>')}</div>
+      <input class="input winput" id="wIn" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="พิมพ์เฉพาะคำที่เติมในช่องว่าง" value="${esc(v || '')}">`;
+  } else if (Q.kind === 'write'){
+    body = `<div class="prompt">${esc(Q.q)}</div><div class="hint">✍️ ${esc(Q.hint)}</div>
+      <input class="input winput" id="wIn" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="200" placeholder="พิมพ์ประโยคเต็มที่นี่" value="${esc(v || '')}">`;
+  } else if (Q.kind === 'sort'){
+    const cur = v || [];
+    body = `<div class="hint" style="margin:0 0 10px">ลากคำลงช่อง หรือแตะคำ แล้วแตะช่องว่าง (ใช้คำซ้ำได้ · แตะช่องที่เติมแล้วเพื่อลบ)</div>
+      <div class="tray">${Q.bank.map(b => `<span class="tile${pickedTile === b ? ' picked' : ''}" data-v="${esc(b)}">${esc(b)}</span>`).join('')}</div>
+      ${Q.q.map(line => { const m = line.split(/\{(\d)\}/); return `<div class="srow">${m.map((p, i) => i % 2 ? `<span class="dropz${cur[p] ? ' full' : ''}" data-b="${p}">${cur[p] ? esc(cur[p]) : '?'}</span>` : `<span>${esc(p)}</span>`).join('')}</div>`; }).join('')}`;
+  } else if (Q.kind === 'order'){
+    const cur = v || [];
+    body = `<div class="hint" style="margin:0 0 10px">ลากหรือแตะคำเพื่อเรียงเป็นประโยคที่ถูกต้อง (แตะคำในกรอบบนเพื่อเอาออก)</div>
+      <div class="oline" id="oLine">${cur.map(t => `<span class="tile" data-t="${t}" data-in="1">${esc(Q.tiles[t])}</span>`).join('')}</div>
+      <div class="tray" id="oTray">${A.perm[qi].map(t => `<span class="tile${cur.includes(t) ? ' used' : ''}" data-t="${t}">${esc(Q.tiles[t])}</span>`).join('')}</div>`;
+  }
+  $('#qArea').innerHTML = `<div class="card qcard" translate="no">
+    <div class="qmeta"><span class="sec">✍️ ตอนที่ 2 · เขียนตอบ</span><span class="lv ${Q.lv}">${LV_TH[Q.lv]}</span><span class="qtype">${esc(Q.t)}</span><span class="qno">ข้อ ${pos + 1} / ${A.order.length}</span></div>
+    <div class="wbox">${body}</div>
+    ${navHtml(A, pos)}
+  </div>`;
+  const set = val => { A.answers[qi] = val; saveAtt(); updateQuizBars(); };
+  if (Q.kind === 'pick'){
+    document.querySelectorAll('.wsel').forEach(sel => sel.onchange = () => {
+      const arr = (A.answers[qi] || Q.blanks.map(() => '')).slice();
+      arr[Number(sel.dataset.b)] = sel.value; sel.classList.toggle('ok', !!sel.value); beep('tap'); set(arr);
+    });
+  } else if (Q.kind === 'fill' || Q.kind === 'write'){
+    const inp = $('#wIn');
+    inp.oninput = () => { A.answers[qi] = inp.value; updateQuizBars(); clearTimeout(drawWritten._s); drawWritten._s = setTimeout(saveAtt, 300); };
+    inp.onblur = saveAtt;
+    inp.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); saveAtt(); const nx = $('#qNext'); if (nx) nx.click(); } };
+  } else if (Q.kind === 'sort'){
+    const place = (b, val) => { const arr = (A.answers[qi] || Q.q.map(() => '')).slice(); arr[b] = val; set(arr); beep('tap'); drawQuestion(); };
+    document.querySelectorAll('.tray .tile').forEach(t => makeDrag(t,
+      target => { const z = target && target.closest('.dropz'); if (z){ pickedTile = null; place(Number(z.dataset.b), t.dataset.v); } },
+      () => { pickedTile = pickedTile === t.dataset.v ? null : t.dataset.v; drawQuestion(); }));
+    document.querySelectorAll('.dropz').forEach(z => z.onclick = () => {
+      const b = Number(z.dataset.b);
+      if (pickedTile) place(b, pickedTile);
+      else if (z.classList.contains('full')) place(b, '');
+    });
+  } else if (Q.kind === 'order'){
+    const cur = () => (A.answers[qi] || []).slice();
+    const commit = arr => { set(arr.length ? arr : null); beep('tap'); drawQuestion(); };
+    document.querySelectorAll('#oLine .tile').forEach(t => makeDrag(t,
+      target => {
+        const arr = cur(), me = Number(t.dataset.t), from = arr.indexOf(me);
+        if (!target || target.closest('#oTray')){ arr.splice(from, 1); return commit(arr); }
+        const over = target.closest('#oLine .tile');
+        if (over && over !== t){ arr.splice(from, 1); arr.splice(arr.indexOf(Number(over.dataset.t)), 0, me); return commit(arr); }
+        if (target.closest('#oLine')){ arr.splice(from, 1); arr.push(me); return commit(arr); }
+      },
+      () => { const arr = cur(); arr.splice(arr.indexOf(Number(t.dataset.t)), 1); commit(arr); }));
+    document.querySelectorAll('#oTray .tile:not(.used)').forEach(t => makeDrag(t,
+      target => {
+        if (!target) return;
+        const arr = cur(), me = Number(t.dataset.t);
+        const over = target.closest('#oLine .tile');
+        if (over){ arr.splice(arr.indexOf(Number(over.dataset.t)), 0, me); return commit(arr); }
+        if (target.closest('#oLine')){ arr.push(me); commit(arr); }
+      },
+      () => { const arr = cur(); arr.push(Number(t.dataset.t)); commit(arr); }));
+  }
+  bindNav(A);
+  updateQuizBars();
+  if (window.scrollY > 200) window.scrollTo({top:0, behavior:'smooth'});
+}
 function updateQuizBars(){
   const A = S.att, n = answeredCount(), tot = A.order.length;
   const c = $('#qCount'); if (c) c.textContent = n + '/' + tot;
   const b = $('#qBar'); if (b) b.style.width = (n / tot * 100) + '%';
   const map = $('#qMap');
   if (map){
-    map.innerHTML = A.order.map((qi, p) => `<button class="qdot${A.answers[qi] != null ? ' done' : ''}${p === A.cur ? ' cur' : ''}" data-p="${p}">${p + 1}</button>`).join('');
-    map.querySelectorAll('.qdot').forEach(d => d.onclick = () => { clearTimeout(drawQuestion._t); A.cur = Number(d.dataset.p); saveAtt(); drawQuestion(); });
+    map.innerHTML = A.order.map((qi, p) => `<button class="qdot${ALL[qi].w ? ' w' : ''}${isAnswered(ALL[qi], A.answers[qi]) ? ' done' : ''}${p === A.cur ? ' cur' : ''}" data-p="${p}" title="${ALL[qi].w ? 'เขียนตอบ' : 'ปรนัย'}">${ALL[qi].w ? '✍' : ''}${p + 1}</button>`).join('');
+    map.querySelectorAll('.qdot').forEach(d => d.onclick = () => { clearTimeout(drawQuestion._t); A.cur = Number(d.dataset.p); pickedTile = null; saveAtt(); drawQuestion(); });
   }
 }
 function askSubmit(){
@@ -1005,9 +1215,9 @@ function askSubmit(){
 }
 function scoreAttempt(A){
   const by = {easy:[0,0], medium:[0,0], hard:[0,0]};
-  let score = 0;
-  QUESTIONS.forEach((Q, i) => { by[Q.lv][1]++; if (A.answers[i] === Q.a){ score++; by[Q.lv][0]++; } });
-  return {score, total:QUESTIONS.length, by};
+  let score = 0, w = 0, wt = 0;
+  A.order.forEach(i => { const Q = ALL[i], ok = isCorrect(Q, A.answers[i]); by[Q.lv][1]++; if (ok){ score++; by[Q.lv][0]++; } if (Q.w){ wt++; if (ok) w++; } });
+  return {score, total:A.order.length, by, w, wt};
 }
 async function finishQuiz(){
   const A = S.att;
@@ -1016,10 +1226,10 @@ async function finishQuiz(){
   clearInterval(S.timerInt); clearTimeout(drawQuestion._t);
   const sc = scoreAttempt(A);
   const dur = Math.round((Date.now() - A.start) / 1000);
-  const ansStr = A.order.map(i => (i + 1) + ':' + (A.answers[i] == null ? '-' : 'ABCD'[A.answers[i]])).join(',');
+  const ansStr = A.order.map(i => { const Q = ALL[i]; return Q.w ? Q.id + ':' + (isCorrect(Q, A.answers[i]) ? '✓' : '✗') + '[' + ansText(Q, A.answers[i]).slice(0, 40) + ']' : (i + 1) + ':' + (A.answers[i] == null ? '-' : 'ABCD'[A.answers[i]]); }).join(',');
   const payload = {key:S.me.key, deviceId:S.deviceId, mode:A.mode, attemptId:A.id, score:sc.score, total:sc.total,
     easy:sc.by.easy[0], medium:sc.by.medium[0], hard:sc.by.hard[0], durationSec:dur, violations:A.violations, answers:ansStr};
-  const res = {mode:A.mode, score:sc.score, total:sc.total, by:sc.by, dur, answers:A.answers, order:A.order, perm:A.perm, when:nowTh(), attempt:null, violations:A.violations};
+  const res = {mode:A.mode, score:sc.score, total:sc.total, by:sc.by, w:sc.w, wt:sc.wt, dur, answers:A.answers, order:A.order, perm:A.perm, when:nowTh(), attempt:null, violations:A.violations};
   main(`<div style="text-align:center;padding:80px 0"><div class="h1 grad">กำลังส่งคำตอบ…</div><p class="muted" style="margin-top:8px">อย่าเพิ่งปิดหน้านี้นะ</p></div>`);
   const r = await api('submit', payload);
   store.del('ppc_att_' + S.me.key);
@@ -1086,6 +1296,8 @@ function renderResult(res){
       <div class="card" style="padding:24px">
         <div style="font-weight:900;font-size:19px;margin-bottom:6px">📊 คะแนนแยกตามระดับ</div>
         ${lvBar('easy', 'linear-gradient(90deg,#12B8A6,#5EE6C8)')}${lvBar('medium', 'linear-gradient(90deg,#FF9F43,#FFC93C)')}${lvBar('hard', 'linear-gradient(90deg,#FF6B6B,#FF7EB6)')}
+        <div class="lvrow" style="margin-top:16px"><span>📝 ปรนัย</span><div class="bar"><i style="background:var(--g-pre)" data-w="${(res.score - res.w) / (res.total - res.wt) * 100}"></i></div><span>${res.score - res.w}/${res.total - res.wt}</span></div>
+        <div class="lvrow"><span>✍️ เขียนตอบ</span><div class="bar"><i style="background:var(--g-post)" data-w="${res.wt ? res.w / res.wt * 100 : 0}"></i></div><span>${res.w}/${res.wt}</span></div>
         <div class="res-actions">
           <button class="btn btn-pre" id="btnSave">📸 บันทึกรูปส่งครู</button>
           <button class="btn btn-post" id="btnAgain">🔁 ทำอีกครั้ง</button>
@@ -1113,7 +1325,11 @@ function renderResult(res){
 function renderReview(res){
   const letters = ['A','B','C','D'];
   $('#revBox').innerHTML = `<div class="card review"><div style="font-weight:900;font-size:19px">📖 เฉลยและคำอธิบาย</div>${res.order.map((qi, p) => {
-    const Q = QUESTIONS[qi], mine = res.answers[qi], ok = mine === Q.a, perm = res.perm[qi];
+    const Q = ALL[qi], mine = res.answers[qi], ok = isCorrect(Q, mine), perm = res.perm[qi];
+    if (Q.w) return `<div class="rv ${ok ? 'ok' : 'no'}"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><b>${ok ? '✅' : '❌'} ข้อ ${p + 1}</b><span class="sec">✍️ ${esc(Q.t)}</span><span class="lv ${Q.lv}">${LV_TH[Q.lv]}</span></div>
+      <div style="font-weight:700">${Q.kind === 'order' ? 'เรียงคำ: ' + esc(Q.tiles.join(' / ')) : Q.kind === 'sort' ? esc(Q.q.join('  ')).replace(/\{\d\}/g, '_____') : esc(Q.q).replace(/\{\d\}/g, '_____')}</div>
+      <div class="ans">คำตอบของคุณ: ${esc(ansText(Q, mine) || 'ไม่ได้ตอบ')}${ok ? '' : `<br><span style="color:#0C8A7A">คำตอบที่ถูก: ${esc(rightText(Q))}</span>`}</div>
+      <div class="ex">💡 ${esc(Q.ex)}</div></div>`;
     const label = oi => oi == null ? 'ไม่ได้ตอบ' : letters[perm.indexOf(oi)] + '. ' + esc(Q.o[oi]);
     return `<div class="rv ${ok ? 'ok' : 'no'}"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><b>${ok ? '✅' : '❌'} ข้อ ${p + 1}</b><span class="lv ${Q.lv}">${LV_TH[Q.lv]}</span></div>
       <div style="font-weight:700">${esc(Q.q).replace(/\n/g, '<br>').replace(/___/g, '_____').replace(/\[\[(.+?)\]\]/g, '<u class="mark">$1</u>')}</div>
@@ -1174,7 +1390,7 @@ async function buildCard(res){
     if (a > 0){ rr(c, 560, y + 14, Math.max(22, 450 * a / t), 22, 11); c.fillStyle = col; c.fill(); }
   });
   // info tiles
-  const tiles = [['⏱ เวลาที่ใช้', fmtTime(res.dur)], ['🔁 ครั้งที่', String(res.attempt || '-')], ['🛡️ ยืนยันตัวตน', sess.get('ppc_face_' + S.me.key) === '1' ? 'ผ่าน' : '-']];
+  const tiles = [['⏱ เวลาที่ใช้', fmtTime(res.dur)], ['✍️ เขียนตอบ', (res.w || 0) + '/' + (res.wt || 0)], ['🛡️ ยืนยันตัวตน', sess.get('ppc_face_' + S.me.key) === '1' ? 'ผ่าน' : '-']];
   tiles.forEach(([k, v], i) => {
     const x = 50 + i * 333, y = 1010;
     rr(c, x, y, 313, 140, 30); c.fillStyle = '#fff'; c.fill();
@@ -1413,9 +1629,9 @@ const Admin = (() => {
   const avg = a => a.length ? (a.reduce((x, y) => x + y, 0) / a.length) : null;
   function drawKpis(){
     const L = fCls === 'all' ? list : list.filter(x => x.cls === fCls);
-    const pre = L.filter(x => x.st && x.st.preBest != null).map(x => x.st.preBest), post = L.filter(x => x.st && x.st.postBest != null).map(x => x.st.postBest);
+    const pre = L.filter(x => x.st && x.st.preBest != null).map(x => x.st.preBest / TOTAL('pre') * 100), post = L.filter(x => x.st && x.st.postBest != null).map(x => x.st.postBest / TOTAL('post') * 100);
     const ap = avg(pre), aq = avg(post);
-    const k = [['🟢 ออนไลน์', L.filter(x => x.online).length + ''], ['👥 เข้าระบบแล้ว', L.filter(x => x.joined).length + '/' + L.length], ['📘 เฉลี่ย Pretest', ap == null ? '–' : ap.toFixed(1)], ['📗 เฉลี่ย Post-test', aq == null ? '–' : aq.toFixed(1)], ['📈 พัฒนาการ', ap == null || aq == null ? '–' : ((aq - ap) > 0 ? '+' : '') + (aq - ap).toFixed(1)]];
+    const k = [['🟢 ออนไลน์', L.filter(x => x.online).length + ''], ['👥 เข้าระบบแล้ว', L.filter(x => x.joined).length + '/' + L.length], ['📘 เฉลี่ย Pretest', ap == null ? '–' : ap.toFixed(0) + '%'], ['📗 เฉลี่ย Post-test', aq == null ? '–' : aq.toFixed(0) + '%'], ['📈 พัฒนาการ', ap == null || aq == null ? '–' : ((aq - ap) > 0 ? '+' : '') + (aq - ap).toFixed(0) + '%']];
     $('#kpis').innerHTML = k.map(([a, b]) => `<div class="kpi"><span>${a}</span><b>${b}</b></div>`).join('');
   }
   function drawBody(){
@@ -1425,7 +1641,7 @@ const Admin = (() => {
         <input class="input" id="fq" placeholder="🔎 ค้นหาชื่อ / เลขที่" value="${esc(fq)}">
         <div class="spacer"></div>
         <button class="btn btn-ghost btn-sm" id="rsCls">♻️ รีเซ็ตคะแนนทั้งห้อง</button></div>
-        <div class="tbl-wrap"><table><thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>ชั้น</th><th>สถานะ</th><th>Pretest<br><small>สูงสุด · ล่าสุด · ครั้ง</small></th><th>Post-test<br><small>สูงสุด · ล่าสุด · ครั้ง</small></th><th>พัฒนาการ</th><th>⚠️ ออกจอ</th><th>เครื่อง</th><th>จัดการ</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+        <div class="tbl-wrap"><table><thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>ชั้น</th><th>สถานะ</th><th>Pretest<br><small>สูงสุด · ล่าสุด · ครั้ง</small></th><th>Post-test<br><small>สูงสุด · ล่าสุด · ครั้ง</small></th><th>พัฒนาการ<br><small>(% Post − % Pre)</small></th><th>⚠️ ออกจอ</th><th>เครื่อง</th><th>จัดการ</th></tr></thead><tbody id="tb"></tbody></table></div>`;
       $('#fCls').onchange = e => { fCls = e.target.value; drawKpis(); drawTable(); };
       $('#fq').oninput = e => { fq = e.target.value; drawTable(); };
       $('#rsCls').onclick = () => resetDlg(null);
@@ -1437,7 +1653,7 @@ const Admin = (() => {
     if (!x.joined) return '<span class="st">ยังไม่เข้า</span>';
     if (!x.online) return '<span class="st">ออฟไลน์</span>';
     const p = x.presence || {};
-    if (p.state === 'quiz') return `<span class="st quiz"><i></i>${p.mode === 'post' ? 'Post' : 'Pre'} ข้อ ${p.q}/30 (ตอบ ${p.answered})</span>`;
+    if (p.state === 'quiz') return `<span class="st quiz"><i></i>${p.mode === 'post' ? 'Post' : 'Pre'} ข้อ ${p.q}/${TOTAL(p.mode === 'post' ? 'post' : 'pre')} (ตอบ ${p.answered})</span>`;
     const m = {hub:'หน้าหลัก', face:'กำลังสแกนหน้า', result:'ดูผลคะแนน'};
     return `<span class="st on"><i></i>${m[p.state] || 'ออนไลน์'}</span>`;
   }
@@ -1448,12 +1664,12 @@ const Admin = (() => {
     if (!L.length){ tb.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px" class="muted">ไม่พบรายชื่อ — ใส่รายชื่อในชีท Students ได้เลย</td></tr>'; return; }
     tb.innerHTML = L.map(x => {
       const s = x.st || {};
-      const sc = m => s[m + 'Attempts'] ? `<span class="sc">${s[m + 'Best']}<small> · ${s[m + 'Last']} · ×${s[m + 'Attempts']}</small></span>` : '<span class="muted">–</span>';
-      const g = s.preBest != null && s.postBest != null ? s.postBest - s.preBest : null;
+      const sc = m => s[m + 'Attempts'] ? `<span class="sc">${s[m + 'Best']}<small>/${TOTAL(m)} · ${s[m + 'Last']} · ×${s[m + 'Attempts']}</small></span>` : '<span class="muted">–</span>';
+      const g = s.preBest != null && s.postBest != null ? Math.round(s.postBest / TOTAL('post') * 100 - s.preBest / TOTAL('pre') * 100) : null;
       return `<tr>
         <td><b>${esc(x.no)}</b></td><td><b>${esc(x.name)}</b>${x.lastMsg ? `<div class="muted" style="font-size:12px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.lastMsg.from === 'student' ? '🧑‍🎓 ' : '👩‍🏫 '}${esc(x.lastMsg.text)}</div>` : ''}</td>
         <td>ม.${esc(x.cls)}</td><td>${stText(x)}</td><td>${sc('pre')}</td><td>${sc('post')}</td>
-        <td>${g == null ? '<span class="muted">–</span>' : `<b style="color:${g > 0 ? '#0C8A7A' : g < 0 ? '#D23A5A' : 'inherit'}">${g > 0 ? '+' : ''}${g}</b>`}</td>
+        <td>${g == null ? '<span class="muted">–</span>' : `<b style="color:${g > 0 ? '#0C8A7A' : g < 0 ? '#D23A5A' : 'inherit'}">${g > 0 ? '+' : ''}${g}%</b>`}</td>
         <td>${s.violations ? `<b style="color:#D23A5A">${s.violations}</b>` : '0'}</td>
         <td>${x.joined ? (s.deviceBound ? `<button class="ib" data-unlock="${esc(x.key)}" title="ปลดล็อกเครื่อง">🔒 ปลดล็อก</button>` : '<span class="muted">ว่าง</span>') : '–'}</td>
         <td style="white-space:nowrap">${x.joined ? `<button class="ib" data-chat="${esc(x.key)}">💬${x.unread ? `<span class="badge">${x.unread}</span>` : ''}</button> <button class="ib" data-face="${esc(x.key)}" title="รูปสแกนหน้า">📷</button> <button class="ib" data-reset="${esc(x.key)}" title="รีเซ็ต">♻️</button>` : ''}</td></tr>`;
@@ -1486,16 +1702,16 @@ const Admin = (() => {
     const b = $('#admBody'); if (!b || tab !== 'summary') return;
     const card = cls => {
       const L = list.filter(x => x.cls === cls);
-      const pre = L.filter(x => x.st && x.st.preBest != null).map(x => x.st.preBest), post = L.filter(x => x.st && x.st.postBest != null).map(x => x.st.postBest);
+      const pre = L.filter(x => x.st && x.st.preBest != null).map(x => x.st.preBest / TOTAL('pre') * 100), post = L.filter(x => x.st && x.st.postBest != null).map(x => x.st.postBest / TOTAL('post') * 100);
       const ap = avg(pre), aq = avg(post);
       const both = L.filter(x => x.st && x.st.preBest != null && x.st.postBest != null);
-      const up = both.filter(x => x.st.postBest > x.st.preBest).length;
+      const up = both.filter(x => x.st.postBest / TOTAL('post') > x.st.preBest / TOTAL('pre')).length;
       return `<div class="card"><div style="font-weight:900;font-size:22px">ม.${cls}</div><div class="muted" style="font-size:13px">${L.length} คน · ทำ Pre ${pre.length} · ทำ Post ${post.length}</div>
         <div class="bars" style="margin-top:14px">
-          <div class="bar-row"><span>Pretest</span><div class="bar"><i style="background:var(--g-pre);width:${(ap || 0) / 30 * 100}%"></i></div><span>${ap == null ? '–' : ap.toFixed(1)}</span></div>
-          <div class="bar-row"><span>Post-test</span><div class="bar"><i style="background:var(--g-post);width:${(aq || 0) / 30 * 100}%"></i></div><span>${aq == null ? '–' : aq.toFixed(1)}</span></div>
+          <div class="bar-row"><span>Pretest</span><div class="bar"><i style="background:var(--g-pre);width:${ap || 0}%"></i></div><span>${ap == null ? '–' : ap.toFixed(0) + '%'}</span></div>
+          <div class="bar-row"><span>Post-test</span><div class="bar"><i style="background:var(--g-post);width:${aq || 0}%"></i></div><span>${aq == null ? '–' : aq.toFixed(0) + '%'}</span></div>
         </div>
-        <div style="margin-top:12px;font-weight:800">📈 เฉลี่ยพัฒนาการ: ${ap == null || aq == null ? '–' : ((aq - ap) > 0 ? '+' : '') + (aq - ap).toFixed(2)} · คะแนนสูงขึ้น ${up}/${both.length} คน</div></div>`;
+        <div style="margin-top:12px;font-weight:800">📈 เฉลี่ยพัฒนาการ: ${ap == null || aq == null ? '–' : ((aq - ap) > 0 ? '+' : '') + (aq - ap).toFixed(1) + '%'} · คะแนนสูงขึ้น ${up}/${both.length} คน</div></div>`;
     };
     b.innerHTML = `<div class="cls-sum">${CLASSES.map(card).join('')}</div>
       <div class="card muted" style="padding:18px;margin-top:16px">💡 รายละเอียดคะแนนรายครั้ง (ง่าย/กลาง/ยาก, เวลา, คำตอบรายข้อ) ดูได้ในชีท <b>Results</b> ของ Google Sheet</div>`;
