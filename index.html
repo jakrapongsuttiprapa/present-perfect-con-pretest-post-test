@@ -400,10 +400,51 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
   .crystals{display:none}.hero{gap:16px}.mega{font-size:44px;margin:12px 0 6px}
   #sLogin>div:first-child p{font-size:15px!important}.kicker{font-size:11px;letter-spacing:.5px}
 }
+
+/* ======== IMAGES · BANNERS · AVATARS ======== */
+.sky .bgimg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .8s}
+.sky .bgimg.on{opacity:.3}
+.gem img{width:100%;height:100%;object-fit:cover;border-radius:11px}
+.hero-art{margin:20px 0 4px;max-width:470px;border-radius:24px;padding:3px;background:conic-gradient(from var(--ang),#FFD76A,#FF4FD8,#38E8FF,#8B7BFF,#FFD76A);animation:spinb 8s linear infinite,floaty 7s ease-in-out infinite;box-shadow:0 20px 60px -20px #FF4FD8}
+.hero-art img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:21px;background:#0b0d26}
+.avatars{display:flex;flex-wrap:wrap;gap:8px}
+.av{width:46px;height:46px;border-radius:50%;font-size:25px;line-height:1;background:rgba(255,255,255,.06);border:1px solid var(--line2);display:grid;place-items:center;transition:transform .15s,box-shadow .15s;padding:0}
+.av.sel{border:2px solid var(--gold);box-shadow:0 0 0 3px #FFD76A44,0 0 18px #FFD76A;transform:scale(1.12);background:rgba(255,215,106,.15)}
+.avatar-big{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:50%;font-size:32px;vertical-align:middle;margin-right:8px;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.25),rgba(139,123,255,.35));border:2px solid var(--gold);box-shadow:0 0 22px -2px #FFD76A}
+.mbanner{position:relative;height:200px;border-radius:26px;overflow:hidden;margin:0 0 16px;border:1px solid rgba(56,232,255,.35);box-shadow:0 30px 70px -30px #000,0 0 40px -16px var(--c,#8B7BFF)}
+.mb-img{position:absolute;inset:-6%;background-size:cover;background-position:center;animation:kenburns 20s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1) translate(0,0)}to{transform:scale(1.12) translate(-2%,-2%)}}
+.mb-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,8,26,.94) 0%,rgba(6,8,26,.62) 48%,rgba(6,8,26,.12) 100%),linear-gradient(0deg,rgba(6,8,26,.6),transparent 50%)}
+.mb-txt{position:absolute;left:28px;right:180px;bottom:24px}
+.mb-txt small{display:block;font-weight:900;letter-spacing:3px;font-size:12.5px;color:var(--cyan);text-shadow:0 0 10px var(--cyan)}
+.mb-txt b{display:block;font-size:42px;line-height:1.1;margin:4px 0;color:#fff;text-shadow:0 0 26px var(--c,#8B7BFF)}
+.mb-txt span{color:#d6daf7;font-size:15px}
+.mb-ico{position:absolute;right:34px;top:50%;margin-top:-60px;line-height:1;font-size:92px;filter:drop-shadow(0 0 24px var(--c,#FF4FD8));animation:bob 3.4s ease-in-out infinite}
+.mb-ico img{width:120px;height:120px;object-fit:contain}
+.mhead.slim h2,.mhead.slim #mCode{display:none}
+.orb .oimg{position:absolute;inset:6px;border-radius:50%;background-size:cover;background-position:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+.b-face img{width:68px;height:68px;object-fit:contain;display:block}
+.victory .vb img{width:180px;height:180px;object-fit:contain}
+.imgcfg{margin:18px 0;padding:18px 22px}
+.imgcfg summary{cursor:pointer;font-weight:900;font-size:17px;list-style:none}
+.imgcfg summary::-webkit-details-marker{display:none}
+.imgcfg summary::after{content:"  ▾";color:var(--gold)}
+.imgcfg[open] summary::after{content:"  ▴"}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:14px 0}
+.slot{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(6,8,26,.45)}
+.slot b{display:block;font-size:14px}.slot small{display:block;color:var(--mute);font-size:12px;margin-bottom:6px}
+.slot input{padding:8px 10px;font-size:13px}
+.slot input.bad{border-color:var(--bad);box-shadow:0 0 0 3px rgba(255,107,122,.25)}
+.slot .pv{margin-top:8px;height:96px;border-radius:12px;border:1px dashed var(--line2);display:grid;place-items:center;overflow:hidden;color:#7d83b0;font-size:12px;background:rgba(255,255,255,.03)}
+.slot .pv img{width:100%;height:100%;object-fit:cover}
+.slot .pv[data-p="logo"] img,.slot .pv[data-p="boss"] img{object-fit:contain}
+.lite .mb-img,.lite .mb-ico,.lite .hero-art{animation:none}
+@media (max-width:640px){.mbanner{height:150px}.mb-txt{left:18px;right:96px;bottom:16px}.mb-txt b{font-size:26px}.mb-txt span{font-size:13px}.mb-ico{font-size:58px;right:16px;margin-top:-38px}.mb-ico img{width:72px;height:72px}.hero-art{display:none}}
 </style>
 </head>
 <body translate="no">
-<div class="sky"><canvas id="stars"></canvas><div class="floor"></div><div class="horizon"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="sky"><div class="bgimg" id="bgImg"></div><canvas id="stars"></canvas><div class="floor"></div><div class="horizon"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <canvas id="confetti"></canvas>
 <div id="intro" class="intro hide">
   <div class="i-floor"></div><div class="i-sun"></div><div class="i-flare"></div>
@@ -434,6 +475,11 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
   </section>
   <section id="sAdmin" class="hide fade">
     <div class="adm-title"><div class="crown">👑</div><div><div class="mute" style="font-size:13px;font-weight:800;letter-spacing:2px">TEACHER DASHBOARD</div><h1 style="margin:0">แดชบอร์ด<span class="grad-text">ครูโอ๊ต</span></h1></div><span class="mute" id="admLive" style="margin-left:auto;font-size:14px"></span></div>
+    <details class="card imgcfg" id="imgCfg"><summary>🎨 ตกแต่งเว็บด้วยรูปภาพ <span class="mute" style="font-size:13px;font-weight:600">(นักเรียนทุกเครื่องจะเห็น)</span></summary>
+      <p class="mute" style="font-size:14px;margin:10px 0 0">วิธีใส่รูป: อัปโหลดรูปที่ <b>postimages.org</b> → คัดลอกลิงก์แบบ <b>Direct link</b> (ขึ้นต้น https:// ลงท้าย .jpg / .png) → วางในช่อง → กด “บันทึกรูปทั้งหมด” · เว้นว่าง = ใช้ภาพสำเร็จรูปของระบบ</p>
+      <div class="slots" id="slots"></div>
+      <div class="row"><button class="btn" id="cfgSave">💾 บันทึกรูปทั้งหมด</button><button class="btn ghost" id="cfgClear">ล้างทุกช่อง</button><span class="mute" id="cfgMsg" style="font-size:13px"></span></div>
+    </details>
     <div class="stats">
       <div class="stat" style="--c:#8B7BFF"><div class="v" id="stN">0</div><div class="l">นักเรียนทั้งหมด</div></div>
       <div class="stat" style="--c:#3DE08F"><div class="v" id="stOn" style="color:var(--ok)">0</div><div class="l">กำลังทำอยู่ตอนนี้</div></div>
@@ -461,9 +507,10 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
     <div>
       <span class="kicker">👑 ม.6 · O-NET / TGAT MASTER CLASS</span>
       <div class="hero-top"><div class="mega"><span>PRESENT</span><span class="grad-text">PERFECT</span><span>LAB</span></div>
-      <div class="cube-wrap"><div class="cube"><div class="f1" style="--c:var(--pps)">PPS</div><div class="f2" style="--c:var(--ppc)">PPC</div><div class="f3" style="--c:var(--ps)">PS</div><div class="f4" style="--c:var(--pps)">V3</div><div class="f5" style="--c:var(--ppc)">V-ing</div><div class="f6" style="--c:var(--ps)">V2</div></div></div></div>
+      <div class="cube-wrap" id="cubeWrap"><div class="cube"><div class="f1" style="--c:var(--pps)">PPS</div><div class="f2" style="--c:var(--ppc)">PPC</div><div class="f3" style="--c:var(--ps)">PS</div><div class="f4" style="--c:var(--pps)">V3</div><div class="f5" style="--c:var(--ppc)">V-ing</div><div class="f6" style="--c:var(--ps)">V2</div></div></div></div>
       <p class="mute" style="font-size:18px;margin:0">Simple vs Continuous · Present Perfect vs Past Simple<br>เน้น <span class="rot" id="rot">Result ✔</span></p>
       <p class="mute" style="font-size:15px;margin:6px 0 0">8 ภารกิจ ฝึกคิด วิเคราะห์ และทำข้อสอบจริง · สะสมคะแนนเลื่อนแรงก์ 🌱 → 👑</p>
+      <div class="hero-art hide" id="heroArt"><img id="heroImg" alt="" decoding="async"></div>
       <div class="crystals">
         <div class="crys" style="--c:var(--pps)"><div class="k">PPS</div><div><b>have / has + V3</b><small>ผลลัพธ์ · ประสบการณ์ · นับจำนวน</small></div></div>
         <div class="crys" style="--c:var(--ppc)"><div class="k">PPC</div><div><b>have / has been + V-ing</b><small>กิจกรรม · ระยะเวลา · หลักฐาน</small></div></div>
@@ -480,6 +527,7 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
           <select id="inClass"><option value="">เลือกชั้น</option><option>ม.6/1</option><option>ม.6/2</option><option>ม.6/3</option><option>ม.6/4</option><option>ม.6/5</option><option>ม.6/6</option></select></div>
         <div style="flex:1;min-width:140px"><label>เลขที่</label><input id="inNo" type="number" min="1" max="60" inputmode="numeric" placeholder="1–60"></div>
       </div>
+      <label>เลือกอวาตาร์ของฉัน</label><div class="avatars" id="avatars"></div>
       <button class="btn" id="btnStart" style="width:100%;margin-top:20px;font-size:18px;padding:15px">เริ่มภารกิจ ✨</button>
       <p class="mute" style="font-size:12.5px;text-align:center;margin:12px 0 0">By T.OAT · English Department</p>
     </div>
@@ -491,7 +539,7 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
       <div class="ring" id="ring"><div><span><b id="totScore">0</b><br><small>คะแนนรวม</small></span></div></div>
       <div>
         <div class="mute" style="font-size:13px;font-weight:800;letter-spacing:2px">MISSION CONTROL</div>
-        <h1 style="margin:2px 0 6px">สวัสดี <span class="grad-text" id="hello"></span> 👋</h1>
+        <h1 style="margin:2px 0 6px"><span class="avatar-big" id="avBig">🦊</span>สวัสดี <span class="grad-text" id="hello"></span> 👋</h1>
         <div style="margin:2px 0 8px"><span class="rank" id="rank"></span><span class="rank-next" id="rankNext"></span></div>
         <div class="mute" style="font-size:14.5px" id="totDone"></div>
         <div class="bar" style="--c:var(--gold);height:10px;margin-top:10px"><span id="totBar" style="width:0;background:var(--grad)"></span></div>
@@ -507,11 +555,13 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
 
   <!-- MISSION -->
   <section id="sMission" class="hide fade">
-    <div class="mhead">
+    <div class="mhead slim">
       <button class="btn ghost" id="btnBack">← กลับ</button>
       <div><div class="mute" style="font-size:12.5px;font-weight:900;letter-spacing:1.5px" id="mCode"></div><h2 style="margin:0" id="mTitle"></h2></div>
       <div class="prog"><div class="mute" style="font-size:13px;text-align:right" id="mProg"></div><div class="bar" id="mBarWrap" style="height:10px"><span id="mBar" style="width:0"></span></div></div>
     </div>
+    <div class="mbanner" id="mBanner"><div class="mb-img" id="mbImg"></div><div class="mb-shade"></div>
+      <div class="mb-txt"><small id="mbKick"></small><b id="mbTitle"></b><span id="mbDesc"></span></div><div class="mb-ico" id="mbIco"></div></div>
     <div class="card" id="mBody"></div>
   </section>
 
@@ -533,6 +583,8 @@ button,.chip,.bin,.tok,.opt,a{-webkit-tap-highlight-color:transparent;touch-acti
 // วาง URL เว็บแอป Google Apps Script (ลงท้าย /exec) ระหว่างเครื่องหมายคำพูด  ว่างไว้ = โหมดออฟไลน์
 const GAS_URL = "https://script.google.com/macros/s/AKfycby2bObhiBQJfP35O1N2mN7e6hFLult-beiY8O0FW2M0dkb5pmnfoUz5CBOKsBU51sP0/exec";
 const FALLBACK_PIN = "7846"; // ใช้เฉพาะตอนยังไม่ได้ใส่ GAS_URL
+// (ไม่บังคับ) ใส่ลิงก์รูปเริ่มต้นได้ที่นี่ หรือตั้งผ่านหน้า "ครูโอ๊ต" → 🎨 ตกแต่งเว็บด้วยรูปภาพ (แนะนำ เพราะไม่ต้องแก้ไฟล์)
+const DEFAULT_CFG = { logo:"", hero:"", bg:"", boss:"" /* , m_A1:"https://i.postimg.cc/....jpg" */ };
 /* ================= DATA ================= */
 const R_ACT = "เห็นร่องรอย/เน้นกิจกรรมที่ทำต่อเนื่อง",
       R_RES = "เน้นผลลัพธ์ที่เสร็จแล้ว/นับจำนวนได้",
@@ -704,6 +756,7 @@ $("btnStart").onclick=()=>{
   if(!(no>=1&&no<=60))return toast("เลขที่ต้องอยู่ระหว่าง 1–60");
   const old=load();
   ST=(old&&old.name===name&&old.cls===cls&&old.no===no)?old:{name,cls,no,best:{},writing:{}};
+  ST.avatar=pickedAv||ST.avatar||AVATARS[Math.floor(Math.random()*AVATARS.length)];
   save();hub();syncHello();startHeartbeat();
 };
 $("btnLogout").onclick=()=>{if(confirm("ออกจากระบบ? (คะแนนในเครื่องนี้จะยังอยู่ถ้ากรอกชื่อเดิม)")){ST=null;$("who").textContent="";show("sLogin")}};
@@ -727,7 +780,8 @@ function hub(silent){
     el.style.setProperty("--c",`var(${m.color})`);el.style.left=P[i][0]/10+"%";el.style.top=P[i][1]/6.8+"%";
     el.style.setProperty("--d",(i*0.08)+"s");
     const pct=b!=null?b/mx:0,st=b!=null?(pct>=.9?3:pct>=.6?2:pct>0?1:0):0;
-    el.innerHTML=`<div class="orb">${unlocked?META[m.id][0]:'<span class="lock">🔒</span>'}</div>${b!=null?'<span class="donechk">✓</span>':""}
+    const cov=img("m_"+m.id);
+    el.innerHTML=`<div class="orb">${cov?`<span class="oimg" style="background-image:url(&quot;${cov}&quot;)"></span>`:""}${unlocked?(cov?"":META[m.id][0]):'<span class="lock">🔒</span>'}</div>${b!=null?'<span class="donechk">✓</span>':""}
       <div class="nlabel"><b>${m.id} · ${m.title}</b><small>${META[m.id][1]}</small><span class="nst">${[0,1,2].map(k=>k<st?"<em>★</em>":"<i>★</i>").join("")} ${b!=null?`${b}/${mx}`:`เต็ม ${mx}`}</span></div>`;
     if(unlocked)el.onclick=()=>startMission(m);else el.onclick=()=>toast(`🔒 ผ่าน ${MISSIONS[i-1].id} ก่อนเพื่อปลดล็อกด่านนี้`);
     map.appendChild(el);
@@ -742,7 +796,7 @@ function hub(silent){
   const rk=rankOf(tot),nx=RANKS.find(r=>r[0]>tot);
   $("rank").textContent=rk[1];
   $("rankNext").textContent=nx?`อีก ${nx[0]-tot} คะแนน → ${nx[1]}`:"แรงก์สูงสุดแล้ว!";
-  $("hello").textContent=ST.name.split(/\s+/)[0];
+  $("hello").textContent=ST.name.split(/\s+/)[0];$("avBig").textContent=ST.avatar||"🦊";
   const pc=Math.round(tot/TOTAL_MAX*100);
   $("ring").style.background=`conic-gradient(#FFD76A 0%,#F7A928 ${pc*.5}%,#FF6B6B ${pc}%,rgba(255,255,255,.08) ${pc}% 100%)`;
   $("totBar").style.width=(tot/TOTAL_MAX*100)+"%";
@@ -759,7 +813,7 @@ function setProg(done,total,score){
 }
 function startMission(m){
   CUR={m,score:0};
-  $("mCode").textContent=`MISSION ${m.id}`;$("mTitle").textContent=m.title;
+  $("mCode").textContent=`MISSION ${m.id}`;$("mTitle").textContent=m.title;setBanner(m);
   $("mBarWrap").style.setProperty("--c",`var(${m.color})`);
   show("sMission");
   warp(m);
@@ -803,7 +857,7 @@ function warp(m){if(window.matchMedia&&matchMedia("(prefers-reduced-motion: redu
   w.innerHTML=`<div class="rays"></div><div class="flash"></div><div class="ban"><small>MISSION ${m.id}${m.id==="EX"?" · BOSS FIGHT":""}</small><b>${m.title}</b></div>`;
   document.body.appendChild(w);[180,260,420,700].forEach((f,i)=>tone(f,i*.05,.35,"sawtooth",.035));setTimeout(()=>w.remove(),1600)}
 function victory(){const v=document.createElement("div");v.className="victory";
-  v.innerHTML=`<div><div class="vb">👾💥</div><div style="font-weight:900;letter-spacing:6px;color:#38E8FF">TENSE TITAN</div><h1>BOSS DEFEATED!</h1><p>ปราบบอสด่านสุดท้ายสำเร็จ · ปลดล็อก Write Lab แล้ว ✍️</p><button class="btn" style="margin-top:14px">รับรางวัล 🏆</button></div>`;
+  v.innerHTML=`<div><div class="vb">${img("boss")?bossFace():"👾💥"}</div><div style="font-weight:900;letter-spacing:6px;color:#38E8FF">TENSE TITAN</div><h1>BOSS DEFEATED!</h1><p>ปราบบอสด่านสุดท้ายสำเร็จ · ปลดล็อก Write Lab แล้ว ✍️</p><button class="btn" style="margin-top:14px">รับรางวัล 🏆</button></div>`;
   v.onclick=e=>{if(e.target===v||e.target.tagName==="BUTTON")v.remove()};document.body.appendChild(v);
   confetti();setTimeout(confetti,700);[262,330,392,523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.45,"square",.05))}
 const ACH=[
@@ -835,6 +889,46 @@ function musicStart(){try{AC=AC||new (window.AudioContext||window.webkitAudioCon
       MUSIC.step++;MUSIC.next+=SPB}},60)}
 function musicStop(){MUSIC.on=false;clearInterval(MUSIC.timer);MUSIC.timer=null}
 $("musicBtn").onclick=()=>{if(MUSIC.on){musicStop()}else{musicStart()}$("musicBtn").classList.toggle("on",MUSIC.on);try{localStorage.setItem("ppMusic",MUSIC.on?"1":"0")}catch(e){}};
+/* ===== images & covers ===== */
+const SLOTS=[["logo","โลโก้ (มุมซ้ายบน)","สี่เหลี่ยมจัตุรัส 512×512 · PNG พื้นใสสวยสุด"],["hero","รูปหน้าแรก (ใต้ชื่อเว็บ)","แนวนอน 1200×800"],
+  ["bg","พื้นหลังทั้งเว็บ (แสดงจาง ๆ)","1920×1080 · โทนเข้มดีที่สุด"],["boss","หน้าบอส TENSE TITAN","600×600 · PNG พื้นใส"]]
+  .concat([["A1","Sort It"],["A2","Evidence Detective"],["A3","Error Hunter"],["B1","Time-Word Sort"],["B2","Meaning Check"],["B3","Chat Fix"],["EX","Exam Zone (บอส)"],["WR","Write Lab"]]
+  .map(([id,t])=>["m_"+id,`ปกภารกิจ ${id} · ${t}`,"แนวนอน 1200×500 (แสดงบนแบนเนอร์ + ลูกแก้วในแผนที่)"]));
+const validUrl=u=>/^https:\/\/[^\s"'<>()\\]+$/i.test(String(u||"").trim());
+let CFG=Object.assign({},DEFAULT_CFG);
+try{Object.assign(CFG,JSON.parse(localStorage.getItem("ppCfg")||"{}"))}catch(e){}
+function img(k){const u=CFG[k];return validUrl(u)?String(u).trim():""}
+function applyCfg(){
+  const lg=img("logo");document.querySelector(".gem").innerHTML=lg?`<img src="${lg}" alt="">`:"⏳";
+  const bg=img("bg"),b=$("bgImg");if(bg){b.style.backgroundImage=`url("${bg}")`;b.classList.add("on")}else{b.classList.remove("on");b.style.backgroundImage=""}
+  const h=img("hero");$("heroArt").classList.toggle("hide",!h);if(h)$("heroImg").src=h;
+}
+function coverSVG(m){
+  const col={A:["#F7A928","#1ECBB6"],B:["#FF6B6B","#F7A928"],F:["#FF4FD8","#8B7BFF"]}[m.part],em=META[m.id][0];
+  let grid="";for(let i=0;i<=24;i++)grid+=`<line x1="${450+(i-12)*90}" y1="380" x2="450" y2="210" />`;for(let j=1;j<7;j++){const y=210+170*Math.pow(j/7,2);grid+=`<line x1="0" y1="${y}" x2="900" y2="${y}"/>`}
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380"><defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b0d26"/><stop offset=".55" stop-color="${col[0]}" stop-opacity=".55"/><stop offset="1" stop-color="${col[1]}" stop-opacity=".85"/></linearGradient>
+  <radialGradient id="s" cx=".78" cy=".45" r=".45"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+  <rect width="900" height="380" fill="url(#g)"/><rect width="900" height="380" fill="url(#s)"/>
+  <g stroke="#38E8FF" stroke-opacity=".28" stroke-width="1.4">${grid}</g>
+  <circle cx="160" cy="70" r="90" fill="${col[1]}" fill-opacity=".18"/><circle cx="820" cy="330" r="120" fill="${col[0]}" fill-opacity=".2"/>
+  <polygon points="560,0 620,0 380,380 300,380" fill="#fff" fill-opacity=".06"/>
+  <text x="880" y="170" text-anchor="end" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="190" fill="#fff" fill-opacity=".09">${m.id}</text>
+</svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+function setBanner(m){
+  const u=img("m_"+m.id),bn=$("mBanner");bn.style.setProperty("--c",`var(${m.id==="EX"?"--mag":m.color})`);
+  $("mbImg").style.backgroundImage=`url("${u||coverSVG(m)}")`;
+  $("mbKick").textContent=`MISSION ${m.id} · ${META[m.id][1]}${m.id==="EX"?" · BOSS FIGHT":""}`;$("mbTitle").textContent=m.title;$("mbDesc").textContent=m.desc;
+  const bi=img("boss");$("mbIco").innerHTML=m.id==="EX"&&bi?`<img src="${bi}" alt="">`:(u?"":META[m.id][0]); // custom cover → let the photo speak
+}
+function bossFace(){const b=img("boss");return b?`<img src="${b}" alt="">`:"👾"}
+/* ===== avatars ===== */
+const AVATARS=["🦊","🐼","🐯","🦄","🐙","🐸","🐧","🦁","🐲","🤖","👽","🧙","🦸","🐬"];
+let pickedAv=null;
+function renderAvatars(cur){pickedAv=cur||pickedAv;$("avatars").innerHTML=AVATARS.map(a=>`<button type="button" class="av${a===pickedAv?" sel":""}" data-a="${a}">${a}</button>`).join("");
+  $("avatars").querySelectorAll(".av").forEach(b=>b.onclick=()=>{pickedAv=b.dataset.a;renderAvatars();tone(880,0,.08,"triangle",.05)})}
 const MAPPOS=[[210,125],[490,125],[770,125],[830,345],[555,345],[280,345],[420,540],[760,540]];
 let UNLOCK=new URLSearchParams(location.search).has("unlock");
 const RANKS=[[0,"🌱 Rookie"],[20,"🧭 Explorer"],[40,"⚡ Challenger"],[60,"💎 Master"],[77,"👑 Legend"]];
@@ -1012,7 +1106,7 @@ function runMC(m){
     const it=items[k];setProg(k,items.length,sc);
     const oi=shuffle(it.opts.map((t,i)=>({t,i})));
     const B=CUR.boss;
-    $("mBody").innerHTML=intro(m)+(B?`<div class="bossbar"><div class="b-face" id="bFace">👾</div><div class="b-info"><b>TENSE TITAN · บอสด่านสุดท้าย</b><div class="hp"><span id="bossHp" style="width:${B.hp/B.max*100}%"></span></div><small class="mute" id="bossTxt">HP ${B.hp}/${B.max} · ตอบถูก = โจมตี 1 ครั้ง</small></div><div class="hearts" id="hearts">${"❤️".repeat(B.hearts)}${"🖤".repeat(3-B.hearts)}</div></div>`:"")+`<div class="qbox"><div class="mute" style="font-size:13px">ข้อ ${k+1}/${items.length}</div><div class="sit">${it.q}</div><div id="o1"></div><div id="fb"></div></div>`;
+    $("mBody").innerHTML=intro(m)+(B?`<div class="bossbar"><div class="b-face" id="bFace">${bossFace()}</div><div class="b-info"><b>TENSE TITAN · บอสด่านสุดท้าย</b><div class="hp"><span id="bossHp" style="width:${B.hp/B.max*100}%"></span></div><small class="mute" id="bossTxt">HP ${B.hp}/${B.max} · ตอบถูก = โจมตี 1 ครั้ง</small></div><div class="hearts" id="hearts">${"❤️".repeat(B.hearts)}${"🖤".repeat(3-B.hearts)}</div></div>`:"")+`<div class="qbox"><div class="mute" style="font-size:13px">ข้อ ${k+1}/${items.length}</div><div class="sit">${it.q}</div><div id="o1"></div><div id="fb"></div></div>`;
     oi.forEach((o,idx)=>{const b=document.createElement("button");b.className="opt";b.innerHTML=`<b>${"abcd"[idx]})</b> ${esc(o.t)}`;b.onclick=()=>{
       $("o1").querySelectorAll("button").forEach(x=>x.disabled=true);
       const ok=o.i===it.a;if(ok)sc++;beep(ok);if(CUR.boss)bossHit(ok);
@@ -1115,7 +1209,7 @@ function drawResult(){
   x.fillStyle="#FFD76A";x.font=`800 15px ${F}`;x.fillText("👑  ม.6 · O-NET / TGAT MASTER CLASS",66,57);
   x.font=`900 44px ${F}`;x.fillStyle="#F5F6FF";x.fillText("PRESENT",50,122);
   x.fillStyle=grad;x.fillText("PERFECT LAB",262,122);
-  x.fillStyle="#F5F6FF";x.font=`800 34px ${F}`;x.fillText(ST.name,50,182);
+  x.fillStyle="#F5F6FF";x.font=`800 34px ${F}`;x.fillText((ST.avatar?ST.avatar+"  ":"")+ST.name,50,182);
   x.fillStyle="#AEB4DC";x.font=`500 20px ${F}`;x.fillText(`${ST.cls}  ·  เลขที่ ${ST.no}  ·  `+new Date().toLocaleString("th-TH",{dateStyle:"medium",timeStyle:"short"}),50,216);
   // ring
   let tot=0,done=0;MISSIONS.forEach(m=>{if(ST.best[m.id]!=null){tot+=ST.best[m.id];done++}});
@@ -1165,7 +1259,20 @@ function admInit(){
     });
   };
 }
+function renderSlots(){
+  $("slots").innerHTML=SLOTS.map(([k,l,h])=>`<div class="slot"><b>${l}</b><small>แนะนำ ${h}</small><input data-k="${k}" placeholder="https://i.postimg.cc/.../รูป.jpg" value="${esc(CFG[k]||"")}" autocomplete="off" spellcheck="false"><div class="pv" data-p="${k}">${validUrl(CFG[k])?`<img src="${esc(CFG[k])}" alt="">`:"ใช้ภาพสำเร็จรูป"}</div></div>`).join("");
+  $("slots").querySelectorAll("input").forEach(i=>i.oninput=()=>{const v=i.value.trim(),pv=$("slots").querySelector(`[data-p="${i.dataset.k}"]`);
+    i.classList.toggle("bad",!!v&&!validUrl(v));pv.innerHTML=v?(validUrl(v)?`<img src="${esc(v)}" alt="" onerror="this.parentNode.textContent='❌ เปิดรูปไม่ได้ ตรวจลิงก์อีกครั้ง'">`:"❌ ลิงก์ต้องขึ้นต้น https://"):"ใช้ภาพสำเร็จรูป"});
+}
 function admStart(){
+  renderSlots();
+  $("cfgClear").onclick=()=>{$("slots").querySelectorAll("input").forEach(i=>{i.value="";i.oninput()})};
+  $("cfgSave").onclick=()=>{const c={};let bad=0;$("slots").querySelectorAll("input").forEach(i=>{const v=i.value.trim();if(v&&!validUrl(v))bad++;c[i.dataset.k]=validUrl(v)?v:""});
+    if(bad)return toast(`มีลิงก์ไม่ถูกต้อง ${bad} ช่อง (ต้องขึ้นต้น https://)`);
+    CFG=Object.assign({},DEFAULT_CFG,c);try{localStorage.setItem("ppCfg",JSON.stringify(CFG))}catch(e){}applyCfg();
+    if(!GAS_URL){$("cfgMsg").textContent="บันทึกเฉพาะเครื่องนี้ (ยังไม่ได้ใส่ GAS_URL)";return}
+    $("cfgSave").disabled=true;$("cfgMsg").textContent="กำลังบันทึก…";
+    gas("setConfig",{pin:ADM.pin,config:c}).then(r=>{$("cfgSave").disabled=false;$("cfgMsg").textContent=r.ok?"✅ บันทึกแล้ว นักเรียนจะเห็นรูปเมื่อเปิดเว็บครั้งถัดไป":"❌ ไม่สำเร็จ: "+(r.error||"")+(r.error==="unknown_action"?" (ต้องอัปเดต Code.gs เป็นเวอร์ชันใหม่)":"");toast(r.ok?"บันทึกรูปแล้ว":"บันทึกรูปไม่สำเร็จ")})};
   show("sAdmin");
   const head=["","เลขที่","ชื่อ-นามสกุล","ชั้น"].concat(MISSIONS.map(m=>m.id)).concat(["รวม","กำลังทำ","ส่ง","ล่าสุด",""]);
   $("admHead").innerHTML=head.map((h,i)=>{const m=MISSIONS.find(x=>x.id===h);return `<th${m?` style="color:var(${m.color});text-align:center" title="${esc(m.title)}"`:""}>${h}</th>`}).join("");
@@ -1258,6 +1365,10 @@ function admCsv(){
 function closeIntro(sound){const it=$("intro");if(it.classList.contains("hide"))return;try{sessionStorage.setItem("ppIntro","1")}catch(e){}
   if(sound){[220,330,440,660,880].forEach((f,i)=>tone(f,i*.06,.4,"sawtooth",.05));tone(1320,.35,.6,"triangle",.08)}
   it.classList.add("leave");setTimeout(()=>it.classList.add("hide"),900)}
+/* load images: cached first (instant), then fresh from the server */
+applyCfg();renderAvatars();
+if(GAS_URL)gas("getConfig",{}).then(r=>{if(r&&r.ok&&r.config){CFG=Object.assign({},DEFAULT_CFG,r.config);try{localStorage.setItem("ppCfg",JSON.stringify(CFG))}catch(e){}
+  applyCfg();if(!$("sHub").classList.contains("hide"))hub(true);if(!$("sAdmin").classList.contains("hide"))renderSlots()}});
 $("iStart").onclick=()=>{closeIntro(true);let pref="0";try{pref=localStorage.getItem("ppMusic")}catch(e){}if(pref==="1"&&!MUSIC.on){musicStart();$("musicBtn").classList.add("on")}};$("iSkip").onclick=()=>closeIntro(false);
 /* boot */
 (function(){
@@ -1265,7 +1376,7 @@ $("iStart").onclick=()=>{closeIntro(true);let pref="0";try{pref=localStorage.get
   const isAdmin=new URLSearchParams(location.search).get("admin")==="1";
   if(!seen&&!isAdmin&&!/noIntro/.test(location.search))$("intro").classList.remove("hide");
   if(new URLSearchParams(location.search).get("admin")==="1"){admInit();return}
-  const o=load();if(o){$("inName").value=o.name;$("inClass").value=o.cls;$("inNo").value=o.no}
+  const o=load();if(o){$("inName").value=o.name;$("inClass").value=o.cls;$("inNo").value=o.no;if(o.avatar)renderAvatars(o.avatar)}
 })();
 </script>
 </body>
